@@ -8,7 +8,15 @@
 /* Function executed by the thread */
 void* workerThread(void* arg)
 {
-    printf("Worker thread is running.\n");
+    printf("Worker thread started.\n");
+
+    for (int i = 1; i <= 5; i++)
+    {
+        printf("Worker thread step %d\n", i);
+    }
+
+    printf("Worker thread completed.\n");
+
     return NULL;
 }
 
