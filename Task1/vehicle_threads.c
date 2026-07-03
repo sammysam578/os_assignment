@@ -4,21 +4,27 @@
 /* Navigation Module */
 void *navigationThread(void *arg)
 {
-    printf("Navigation Module is running.\n");
+    printf("Navigation Module started.\n");
+    printf("Finding the best route.\n");
+    printf("Navigation completed.\n");
     return NULL;
 }
 
 /* Obstacle Detection Module */
 void *obstacleThread(void *arg)
 {
-    printf("Obstacle Detection Module is running.\n");
+    printf("Obstacle Detection Module started.\n");
+    printf("Checking nearby objects.\n");
+    printf("Road is clear.\n");
     return NULL;
 }
 
 /* Speed Control Module */
 void *speedThread(void *arg)
 {
-    printf("Speed Control Module is running.\n");
+    printf("Speed Control Module started.\n");
+    printf("Maintaining safe speed.\n");
+    printf("Speed check completed.\n");
     return NULL;
 }
 
