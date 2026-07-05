@@ -87,7 +87,10 @@ void roundRobinScheduler()
 
         for (int i = 0; i < 3; i++)
         {
-            printf("%s is using the CPU.\n", processes[i]);
+          
+            printf("%s is running.\n", processes[i]);
+            printf("Time Quantum = 2 ms\n");
+            printf("%s completed its turn.\n\n", processes[i]);
         }
     }
 }
