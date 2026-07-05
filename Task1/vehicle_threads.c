@@ -4,17 +4,21 @@
 // all threads using same variable
 int completedTasks = 0;
 
+// Mutex is added here for shared variable
+pthread_mutex_t lock;
+
 // Thread for navigation
 void *navigationThread(void *arg)
 {
     printf("Navigation Module started.\n");
     printf("Finding the best route.\n");
-    printf("Navigation completed.\n");
 
 // task counter made 
    for (int i = 0; i < 100000; i++)
     {
+        pthread_mutex_lock(&lock);
         completedTasks++;
+        pthread_mutex_unlock(&lock);
     }
     printf("Navigation Module finished.\n");
     return NULL;
@@ -25,12 +29,14 @@ void *obstacleThread(void *arg)
 {
     printf("Obstacle Detection Module started.\n");
     printf("Checking nearby objects.\n");
-    printf("Road is clear.\n");
+    
 
 //task counter made
     for (int i = 0; i < 100000; i++)
     {
+        pthread_mutex_lock(&lock);
         completedTasks++;
+        pthread_mutex_unlock(&lock);
     }
     printf("Obstacle Detection Module finished.\n");
     return NULL;
@@ -41,15 +47,27 @@ void *speedThread(void *arg)
 {
    printf("Speed Control Module started.\n");
    printf("Maintaining safe speed.\n");
-   printf("Speed check completed.\n");
+   
 
 //task counter made
    for (int i = 0; i < 100000; i++)
     {
+        pthread_mutex_lock(&lock);
         completedTasks++;
+        pthread_mutex_unlock(&lock);
+
     }
     printf("Speed Control Module finished.\n");
     return NULL;
+}
+
+// Displaying the  final result
+void showResult()
+{
+    printf("\nCompleted Tasks : %d\n", completedTasks);
+    printf("Expected Value  : 300000\n");
+    printf("Synchronization with mutex is done for the shared data.\n");
+    printf("All modules completed.\n");
 }
 
 int main()
@@ -61,6 +79,9 @@ int main()
 
     printf("NovaDrive Vehicle Control System...\n\n");
 
+    // Initialize mutex
+    pthread_mutex_init(&lock, NULL);
+
     // Creating three threads
     pthread_create(&thread1, NULL, navigationThread, NULL);
     pthread_create(&thread2, NULL, obstacleThread, NULL);
@@ -71,9 +92,11 @@ int main()
     pthread_join(thread2, NULL);
     pthread_join(thread3, NULL);
 
-  // Displayong the final results 
-    printf("\nCompleted Tasks : %d\n", completedTasks);
-    printf("Expected Value  : 300000\n");
-    printf("No  synchronization and some updates may be lost.\n");
+ // Destroying mutex
+    pthread_mutex_destroy(&lock);
+
+  // Displaying the final results 
+    showResult();
+
     return 0;
 }
