@@ -70,6 +70,28 @@ void showResult()
     printf("All modules completed.\n");
 }
 
+// Simple Round Robin scheduler
+void roundRobinScheduler()
+{
+    printf("\nRound Robin Scheduler Simulation\n");
+
+    char *processes[] = {
+        "Navigation Module",
+        "Obstacle Detection Module",
+        "Speed Control Module"
+    };
+
+    for (int round = 1; round <= 3; round++)
+    {
+        printf("\nRound %d\n", round);
+
+        for (int i = 0; i < 3; i++)
+        {
+            printf("%s is using the CPU.\n", processes[i]);
+        }
+    }
+}
+
 int main()
 {
     // Creating thread variables
@@ -97,6 +119,6 @@ int main()
 
   // Displaying the final results 
     showResult();
-
+    roundRobinScheduler();
     return 0;
 }
