@@ -70,7 +70,7 @@ void showResult()
     printf("All modules completed.\n");
 }
 
-// Simple Round Robin scheduler
+// Round Robin scheduler
 void roundRobinScheduler()
 {
     printf("\nRound Robin Scheduler Simulation\n");
@@ -80,10 +80,13 @@ void roundRobinScheduler()
         "Obstacle Detection Module",
         "Speed Control Module"
     };
+    int totalRounds = 3;
+    int timeQuantum = 2;
 
-    for (int round = 1; round <= 3; round++)
+    for (int round = 1; round <= totalRounds; round++)
     {
-        printf("\nRound %d\n", round);
+        printf("Scheduling Round %d\n", round);
+
 
         for (int i = 0; i < 3; i++)
         {
@@ -91,8 +94,12 @@ void roundRobinScheduler()
             printf("%s is running.\n", processes[i]);
             printf("Time Quantum = 2 ms\n");
             printf("%s completed its turn.\n\n", processes[i]);
+            printf("Scheduler switched to the next module.\n\n");
         }
     }
+
+    printf("Round Robin scheduling completed.\n");
+    printf("All modules received equal CPU time.\n");
 }
 
 int main()
