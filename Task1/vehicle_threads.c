@@ -7,13 +7,17 @@ int completedTasks = 0;
 // Mutex is added here for shared variable
 pthread_mutex_t lock;
 
+// Mutexes used for deadlock prevention
+pthread_mutex_t gpsLock;
+pthread_mutex_t sensorLock;
+
 // Thread for navigation
 void *navigationThread(void *arg)
 {
     printf("Navigation Module started.\n");
     printf("Finding the best route.\n");
 
-// task counter made 
+    // task counter made 
    for (int i = 0; i < 100000; i++)
     {
         pthread_mutex_lock(&lock);
@@ -31,7 +35,7 @@ void *obstacleThread(void *arg)
     printf("Checking nearby objects.\n");
     
 
-//task counter made
+    //task counter made
     for (int i = 0; i < 100000; i++)
     {
         pthread_mutex_lock(&lock);
@@ -49,7 +53,7 @@ void *speedThread(void *arg)
    printf("Maintaining safe speed.\n");
    
 
-//task counter made
+   //task counter made
    for (int i = 0; i < 100000; i++)
     {
         pthread_mutex_lock(&lock);
@@ -102,6 +106,29 @@ void roundRobinScheduler()
     printf("All modules received equal CPU time.\n");
 }
 
+// Demonstrating deadlock prevention
+void deadlockPrevention()
+{
+    printf("\nDeadlock Prevention\n");
+
+    // Locking resources in the same order
+    pthread_mutex_lock(&gpsLock);
+    printf("GPS resource locked.\n");
+
+    pthread_mutex_lock(&sensorLock);
+    printf("Sensor resource locked.\n");
+
+    printf("Vehicle modules accessed shared resources safely.\n");
+    printf("Deadlock was prevented.\n");
+
+    // Unlock in reverse order
+    pthread_mutex_unlock(&sensorLock);
+    pthread_mutex_unlock(&gpsLock);
+
+    printf("Resources released successfully.\n");
+}
+
+
 int main()
 {
     // Creating thread variables
@@ -113,6 +140,9 @@ int main()
 
     // Initialize mutex
     pthread_mutex_init(&lock, NULL);
+    
+    pthread_mutex_init(&gpsLock, NULL);
+    pthread_mutex_init(&sensorLock, NULL);
 
     // Creating three threads
     pthread_create(&thread1, NULL, navigationThread, NULL);
@@ -130,5 +160,10 @@ int main()
   // Displaying the final results 
     showResult();
     roundRobinScheduler();
+    deadlockPrevention();
+
+    pthread_mutex_destroy(&lock);
+    pthread_mutex_destroy(&gpsLock);
+    pthread_mutex_destroy(&sensorLock);
     return 0;
 }
