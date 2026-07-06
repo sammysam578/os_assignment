@@ -154,14 +154,12 @@ int main()
     pthread_join(thread2, NULL);
     pthread_join(thread3, NULL);
 
- // Destroying mutex
-    pthread_mutex_destroy(&lock);
-
   // Displaying the final results 
     showResult();
     roundRobinScheduler();
     deadlockPrevention();
 
+   // destroying all mutex before exiting
     pthread_mutex_destroy(&lock);
     pthread_mutex_destroy(&gpsLock);
     pthread_mutex_destroy(&sensorLock);
