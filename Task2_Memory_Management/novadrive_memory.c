@@ -1,0 +1,50 @@
+#include <stdio.h>
+
+#define FRAME_SIZE 3
+#define TOTAL_PAGES 10
+
+// Page reference string
+int pages[TOTAL_PAGES] = {1, 2, 3, 2, 4, 1, 5, 2, 1, 3};
+
+// Physical memory frames
+int frames[FRAME_SIZE];
+
+// Display memory frames
+void showFrames()
+{
+    printf("Current Memory Frames: ");
+
+    for (int i = 0; i < FRAME_SIZE; i++)
+    {
+        if (frames[i] == -1)
+            printf("- ");
+        else
+            printf("%d ", frames[i]);
+    }
+
+    printf("\n");
+}
+
+int main()
+{
+    printf("NovaDrive Memory Management Simulation\n\n");
+
+    // Initialize all frames as empty
+    for (int i = 0; i < FRAME_SIZE; i++)
+    {
+        frames[i] = -1;
+    }
+
+    printf("Page Reference String:\n");
+
+    for (int i = 0; i < TOTAL_PAGES; i++)
+    {
+        printf("%d ", pages[i]);
+    }
+
+    printf("\n\n");
+
+    showFrames();
+
+    return 0;
+}
