@@ -8,6 +8,7 @@ int pages[TOTAL_PAGES] = {1,2,3,2,4,1,5,2,1,3};
 
 // Memory frames
 int frames[FRAME_SIZE];
+int recent[FRAME_SIZE];
 
 // Display frames
 void showFrames()
@@ -30,6 +31,7 @@ int main()
     for(int i=0;i<FRAME_SIZE;i++)
     {
         frames[i]=-1;
+        recent[i] = -1;
     }
 
     printf("LRU Page Replacement\n");
