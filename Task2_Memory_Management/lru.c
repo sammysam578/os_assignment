@@ -35,8 +35,41 @@ int main()
     }
 
     printf("LRU Page Replacement\n");
+    printf("\nPage Reference String:\n");
+
+    for(int i = 0; i < TOTAL_PAGES; i++)
+    {
+        printf("%d ", pages[i]);
+    }
+
+    printf("\n\n");
 
     showFrames();
+    for(int time = 0; time < TOTAL_PAGES; time++)
+    {
+        int page = pages[time];
+        int found = 0;
+
+        // Check whether page already exists
+        for(int i = 0; i < FRAME_SIZE; i++)
+        {
+            if(frames[i] == page)
+            {
+               found = 1;
+               recent[i] = time;
+               break;
+            }
+        }
+
+        if(found)
+        {
+           printf("Page %d -> Hit\n", page);
+        }
+        else
+        {
+            printf("Page %d -> Page Fault\n", page);
+        }
+    }
 
     return 0;
 }
