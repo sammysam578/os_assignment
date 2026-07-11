@@ -54,17 +54,22 @@ void resetFrames()
 void fifoPageReplacement()
 {
     printf("\nFIFO Page Replacement\n\n");
-
+    
+    int pageHits = 0;
+    int pageFaults = 0;
+    
     for (int i = 0; i < TOTAL_PAGES; i++)
     {
         int page = pages[i];
 
         if (pageExists(page))
         {
-            printf("Page %d -> Hit\n", page);
+           pageHits++;
+           printf("Page %d -> Hit\n", page);
         }
         else
-        {
+        {   
+            pageFaults++;
             printf("Page %d -> Page Fault\n", page);
 
             frames[nextFrame] = page;
@@ -74,6 +79,8 @@ void fifoPageReplacement()
         showFrames();
         printf("\n");
     }
+    printf("\nPage Hits   : %d\n", pageHits);
+    printf("Page Faults : %d\n", pageFaults);
 }
 void lruPageReplacement()
 {
