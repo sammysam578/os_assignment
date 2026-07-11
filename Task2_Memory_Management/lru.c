@@ -69,21 +69,39 @@ int main()
         else
         {
             printf("Page %d -> Page Fault\n", page);
-            // Load page into first empty frame
+
+            int replace = -1;
+
+            //Finding empty frame
             for(int i = 0; i < FRAME_SIZE; i++)
             {
                 if(frames[i] == -1)
                 {
-                   frames[i] = page;
-                   recent[i] = time;
+                   replace = i;
                    break;
                  }
-          }
-    }
+           }
+          // If memory is full, replace the least recently used page
+          if(replace == -1)
+          {
+             replace = 0;
 
- showFrames();
-printf("\n");   
+             for(int i = 1; i < FRAME_SIZE; i++)
+             {
+                 if(recent[i] < recent[replace])
+                 {
+                    replace = i;
+                 }
+             }
 
+        }
+        frames[replace] = page;
+        recent[replace] = time; 
+
+     }
+// Display frames after every page reference
+showFrames();
+printf("\n");
 }
 
 return 0;
