@@ -34,6 +34,8 @@ int main()
         frames[i]=-1;
         recent[i] = -1;
     }
+    int pageHits = 0;
+    int pageFaults = 0;
 
     printf("LRU Page Replacement\n");
    
@@ -64,10 +66,12 @@ int main()
 
         if(found)
         {
+           pageHits++;
            printf("Page %d -> Hit\n", page);
         }
         else
         {
+            pageFaults++;
             printf("Page %d -> Page Fault\n", page);
 
             int replace = -1;
@@ -103,6 +107,8 @@ int main()
 showFrames();
 printf("\n");
 }
-
+printf("\n");
+printf("Page Hits   : %d\n", pageHits);
+printf("Page Faults : %d\n", pageFaults);
 return 0;
 }
