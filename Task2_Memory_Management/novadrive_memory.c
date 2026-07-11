@@ -8,6 +8,7 @@ int pages[TOTAL_PAGES] = {1, 2, 3, 2, 4, 1, 5, 2, 1, 3};
 
 // Physical memory frames
 int frames[FRAME_SIZE];
+int recent[FRAME_SIZE];
 // Points to the next frame to replace
 int nextFrame = 0;
 
@@ -40,6 +41,15 @@ int pageExists(int page)
 
     return 0;
 }
+void resetFrames()
+{
+    for(int i = 0; i < FRAME_SIZE; i++)
+    {
+        frames[i] = -1;
+        recent[i] = -1;
+    }
+}
+
 // FIFO Page Replacement
 void fifoPageReplacement()
 {
@@ -65,6 +75,14 @@ void fifoPageReplacement()
         printf("\n");
     }
 }
+void lruPageReplacement()
+{
+    printf("\nLRU Page Replacement\n\n");
+
+    resetFrames();
+
+    
+}
 
 int main()
 {
@@ -88,6 +106,6 @@ int main()
     showFrames();
 
     fifoPageReplacement();
-
+    lruPageReplacement();
     return 0;
 }
