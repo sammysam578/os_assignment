@@ -81,6 +81,74 @@ void lruPageReplacement()
 
     resetFrames();
 
+    int pageHits = 0;
+    int pageFaults = 0;
+
+    for(int time = 0; time < TOTAL_PAGES; time++)
+    {
+        int page = pages[time];
+        int found = 0;
+
+        // Check if page exists
+        for(int i = 0; i < FRAME_SIZE; i++)
+        {
+            if(frames[i] == page)
+            {
+               found = 1;
+               recent[i] = time;
+               break;
+             }
+         }
+
+         if(found)
+         {
+            pageHits++;
+            printf("Page %d -> Hit\n", page);
+         }
+         else
+         {
+             pageFaults++;
+             printf("Page %d -> Page Fault\n", page);
+
+             int replace = -1;
+
+             //To fFind an empty frame
+             for(int i = 0; i < FRAME_SIZE; i++)
+             {
+                 if(frames[i] == -1)
+                 {
+                    replace = i;
+                    break;
+                  }
+              }
+
+              // If memory is full, replace the least recently used page
+              if(replace == -1)
+              {
+                  replace = 0;
+
+                  for(int i = 1; i < FRAME_SIZE; i++)
+                  {
+                      if(recent[i] < recent[replace])
+                      {
+                         replace = i;
+                      }
+                   }
+              }
+
+              frames[replace] = page;
+              recent[replace] = time;
+         }
+
+         showFrames();
+         printf("\n");
+    }
+
+    printf("\n");
+    printf("Page Hits   : %d\n", pageHits);
+    printf("Page Faults : %d\n", pageFaults);
+    resetFrames();
+
     
 }
 
@@ -89,10 +157,11 @@ int main()
     printf("NovaDrive Memory Management Simulation\n\n");
 
     // Initialize all frames as empty
-    for (int i = 0; i < FRAME_SIZE; i++)
-    {
-        frames[i] = -1;
-    }
+    //for (int i = 0; i < FRAME_SIZE; i++)
+    //{
+      //  frames[i] = -1;
+    //}
+    resetFrames();
 
     printf("Page Reference String:\n");
 
