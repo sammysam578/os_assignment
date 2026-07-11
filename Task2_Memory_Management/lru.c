@@ -8,6 +8,7 @@ int pages[TOTAL_PAGES] = {1,2,3,2,4,1,5,2,1,3};
 
 // Memory frames
 int frames[FRAME_SIZE];
+// Stores recent page usage
 int recent[FRAME_SIZE];
 
 // Display frames
@@ -35,7 +36,7 @@ int main()
     }
 
     printf("LRU Page Replacement\n");
-    printf("\nPage Reference String:\n");
+   
 
     for(int i = 0; i < TOTAL_PAGES; i++)
     {
@@ -68,8 +69,22 @@ int main()
         else
         {
             printf("Page %d -> Page Fault\n", page);
-        }
+            // Load page into first empty frame
+            for(int i = 0; i < FRAME_SIZE; i++)
+            {
+                if(frames[i] == -1)
+                {
+                   frames[i] = page;
+                   recent[i] = time;
+                   break;
+                 }
+          }
     }
 
-    return 0;
+ showFrames();
+printf("\n");   
+
+}
+
+return 0;
 }
