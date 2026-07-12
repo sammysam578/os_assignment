@@ -9,6 +9,18 @@ int pages[TOTAL_PAGES] = {1, 2, 3, 2, 4, 1, 5, 2, 1, 3};
 // Physical memory frames
 int frames[FRAME_SIZE];
 int recent[FRAME_SIZE];
+
+//adding the data names 
+const char *dataNames[] =
+{
+    "",
+    "Navigation Data",
+    "GPS Cache",
+    "Sensor Data",
+    "Camera Buffer",
+    "Speed Control Data"
+};
+
 // Points to the next frame to replace
 int nextFrame = 0;
 
@@ -41,6 +53,7 @@ int pageExists(int page)
 
     return 0;
 }
+
 void resetFrames()
 {
     for(int i = 0; i < FRAME_SIZE; i++)
@@ -65,12 +78,12 @@ void fifoPageReplacement()
         if (pageExists(page))
         {
            pageHits++;
-           printf("Page %d -> Hit\n", page);
+           printf("Accessing %s -> Hit\n", dataNames[page]);
         }
         else
         {   
             pageFaults++;
-            printf("Page %d -> Page Fault\n", page);
+            printf("Accessing %s -> Page Fault\n", dataNames[page]);
 
             frames[nextFrame] = page;
             nextFrame = (nextFrame + 1) % FRAME_SIZE;
@@ -82,6 +95,7 @@ void fifoPageReplacement()
     printf("\nPage Hits   : %d\n", pageHits);
     printf("Page Faults : %d\n", pageFaults);
 }
+
 void lruPageReplacement()
 {
     printf("\nLRU Page Replacement\n\n");
@@ -110,13 +124,12 @@ void lruPageReplacement()
          if(found)
          {
             pageHits++;
-            printf("Page %d -> Hit\n", page);
+            printf("Accessing %s -> Hit\n", dataNames[page]);
          }
          else
          {
              pageFaults++;
-             printf("Page %d -> Page Fault\n", page);
-
+             printf("Accessing %s -> Page Fault\n", dataNames[page]);
              int replace = -1;
 
              //To fFind an empty frame
@@ -171,6 +184,8 @@ int main()
     resetFrames();
 
     printf("Page Reference String:\n");
+    printf("\nNovaDrive Data Mapping\n");
+    printf("----------------------------\n");
 
     for (int i = 0; i < TOTAL_PAGES; i++)
     {
