@@ -10,6 +10,13 @@ int pages[TOTAL_PAGES] = {1, 2, 3, 2, 4, 1, 5, 2, 1, 3};
 int frames[FRAME_SIZE];
 int recent[FRAME_SIZE];
 
+//added global variables 
+int fifoHits = 0;
+int fifoFaults = 0;
+
+int lruHits = 0;
+int lruFaults = 0;
+
 //adding the data names 
 const char *dataNames[] =
 {
@@ -106,7 +113,8 @@ void fifoPageReplacement()
     }
     
     showStats(pageHits, pageFaults);
-    
+    fifoHits = pageHits;
+    fifoFaults = pageFaults;
 }
 
 //LRU page replacement
@@ -179,6 +187,8 @@ void lruPageReplacement()
     }
 
     showStats(pageHits, pageFaults);
+    lruHits = pageHits;
+    lruFaults = pageFaults;
     resetFrames();
 
     
@@ -210,5 +220,41 @@ int main()
 
     fifoPageReplacement();
     lruPageReplacement();
+    
+    printf("\n\n");
+    
+    printf("Memory Management Summary\n");
+
+    printf("FIFO Page Hits    : %d\n", fifoHits);
+    printf("FIFO Page Faults  : %d\n", fifoFaults);
+
+    printf("FIFO Hit Ratio    : %.2f%%\n",
+          (float)fifoHits / TOTAL_PAGES * 100);
+
+    printf("\n");
+
+    printf("LRU Page Hits     : %d\n", lruHits);
+    printf("LRU Page Faults   : %d\n", lruFaults);
+
+    printf("LRU Hit Ratio     : %.2f%%\n",
+          (float)lruHits / TOTAL_PAGES * 100);
+
+    printf("\n");
+
+    if(lruFaults < fifoFaults)
+    {
+        printf("Result:\n");
+        printf("LRU achieved fewer page faults than FIFO.\n");
+    }
+    else if(fifoFaults < lruFaults)
+    {
+        printf("Result:\n");
+        printf("FIFO achieved fewer page faults than LRU.\n");
+    }
+    else
+    {
+         printf("Result:\n");
+         printf("Both FIFO and LRU produced the same performance.\n");
+    }
     return 0;
 }
