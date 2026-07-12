@@ -40,6 +40,18 @@ void showFrames()
     printf("\n");
 }
 
+void showStats(int hits, int faults)
+{
+    printf("\nPage Hits   : %d\n", hits);
+    printf("Page Faults : %d\n", faults);
+
+    printf("Hit Ratio   : %.2f%%\n",
+           (float)hits / TOTAL_PAGES * 100);
+
+    printf("Miss Ratio  : %.2f%%\n",
+           (float)faults / TOTAL_PAGES * 100);
+}
+
 // Check if a page already exists in memory
 int pageExists(int page)
 {
@@ -92,10 +104,12 @@ void fifoPageReplacement()
         showFrames();
         printf("\n");
     }
-    printf("\nPage Hits   : %d\n", pageHits);
-    printf("Page Faults : %d\n", pageFaults);
+    
+    showStats(pageHits, pageFaults);
+    
 }
 
+//LRU page replacement
 void lruPageReplacement()
 {
     printf("\nLRU Page Replacement\n\n");
@@ -164,9 +178,7 @@ void lruPageReplacement()
          printf("\n");
     }
 
-    printf("\n");
-    printf("Page Hits   : %d\n", pageHits);
-    printf("Page Faults : %d\n", pageFaults);
+    showStats(pageHits, pageFaults);
     resetFrames();
 
     
