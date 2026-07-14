@@ -157,6 +157,35 @@ void deleteFile()
     printf("File Not Found.\n");
 }
 
+// Encrypt file content using a simple Caesar cipher
+void encryptFile()
+{
+    char fileName[30];
+
+    printf("\nEnter File Name: ");
+    scanf("%s", fileName);
+
+    for(int i = 0; i < totalFiles; i++)
+    {
+        if(strcmp(files[i].name, fileName) == 0)
+        {
+            for(int j = 0; files[i].content[j] != '\0'; j++)
+            {
+                files[i].content[j]++;
+            }
+
+            printf("File Encrypted Successfully.\n");
+
+            // Record encryption in audit log
+            writeLog("Encrypted", fileName);
+
+            return;
+        }
+    }
+
+    printf("File Not Found.\n");
+}
+
 // Saving file in audit log
 void writeLog(char action[], char fileName[])
 {
@@ -190,7 +219,8 @@ int main()
         printf("2. Read Files\n");
         printf("3. Write File\n");
         printf("4. Delete File\n");
-        printf("5. Exit\n");
+        printf("5. Encrypt File\n");
+        printf("6. Exit\n");
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
@@ -214,6 +244,10 @@ int main()
                 break;
 
             case 5:
+               encryptFile();
+               break;
+
+            case 6:
                printf("\nExiting System...\n");
                break;
 
@@ -221,7 +255,7 @@ int main()
                 printf("Invalid Choice!\n");
         }
 
-    }while(choice != 5);
+    }while(choice != 6);
 
     return 0;
 }
