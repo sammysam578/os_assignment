@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 // Maximum number of files
 #define MAX_FILES 10
@@ -22,6 +23,9 @@ struct File
 //  For Storing files
 struct File files[MAX_FILES];
 int totalFiles = 0;
+
+// Function prototype for audit logging
+void writeLog(char action[], char fileName[]);
 
 // User authentication
 int login()
@@ -65,6 +69,10 @@ void createFile()
     scanf("%d", &files[totalFiles].size);
 
     strcpy(files[totalFiles].permission, "rw");
+
+    // Record file creation in the audit log
+    writeLog("Created", files[totalFiles].name);
+
     totalFiles++;
 
     printf("File Created Successfully.\n");
@@ -109,6 +117,9 @@ void writeFile()
             scanf(" %99s", files[i].content);
 
             printf("Data Written Successfully.\n");
+            
+            // Record file 
+            writeLog("Written", fileName);
             return;
         }
     }
@@ -136,12 +147,32 @@ void deleteFile()
             totalFiles--;
 
             printf("File Deleted Successfully.\n");
+            
+            // Record file deletion
+            writeLog("Deleted", fileName);
             return;
         }
     }
 
     printf("File Not Found.\n");
 }
+
+// Saving file in audit log
+void writeLog(char action[], char fileName[])
+{
+    FILE *log = fopen("audit.log", "a");
+
+    if(log == NULL)
+    {
+        printf("Unable to open audit log.\n");
+        return;
+    }
+
+    fprintf(log, "%s : %s\n", action, fileName);
+
+    fclose(log);
+}
+
 
 int main()
 {
