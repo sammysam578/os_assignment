@@ -83,11 +83,12 @@ void readFiles()
 
     for(int i=0;i<totalFiles;i++)
     {
-        printf("%d. %s (%d KB) Permission: %s\n",
-               i+1,
-               files[i].name,
-               files[i].size,
-               files[i].permission);
+        printf("\nFile %d\n", i + 1);
+        printf("Name       : %s\n", files[i].name);
+        printf("Size       : %d KB\n", files[i].size);
+        printf("Permission : %s\n", files[i].permission);
+        printf("Content    : %s\n", files[i].content);
+  
     }
 }
 
