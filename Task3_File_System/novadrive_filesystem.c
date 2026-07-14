@@ -14,6 +14,9 @@ struct File
     char name[30];
     int size;
     char content[100];
+
+    // File permissions
+    char permission[4];
 };
 
 //  For Storing files
@@ -61,6 +64,7 @@ void createFile()
     printf("Enter File Size (KB): ");
     scanf("%d", &files[totalFiles].size);
 
+    strcpy(files[totalFiles].permission, "rw");
     totalFiles++;
 
     printf("File Created Successfully.\n");
@@ -79,10 +83,11 @@ void readFiles()
 
     for(int i=0;i<totalFiles;i++)
     {
-        printf("%d. %s (%d KB)\n",
+        printf("%d. %s (%d KB) Permission: %s\n",
                i+1,
                files[i].name,
-               files[i].size);
+               files[i].size,
+               files[i].permission);
     }
 }
 
@@ -100,9 +105,36 @@ void writeFile()
         {
             printf("Enter File Content: ");
 
-            scanf(" %[^\n]", files[i].content);
+            scanf(" %99s", files[i].content);
 
             printf("Data Written Successfully.\n");
+            return;
+        }
+    }
+
+    printf("File Not Found.\n");
+}
+
+// Delete an existing file
+void deleteFile()
+{
+    char fileName[30];
+
+    printf("\nEnter File Name: ");
+    scanf("%s", fileName);
+
+    for(int i=0;i<totalFiles;i++)
+    {
+        if(strcmp(files[i].name,fileName)==0)
+        {
+            for(int j=i;j<totalFiles-1;j++)
+            {
+                files[j]=files[j+1];
+            }
+
+            totalFiles--;
+
+            printf("File Deleted Successfully.\n");
             return;
         }
     }
@@ -125,7 +157,8 @@ int main()
         printf("1. Create File\n");
         printf("2. Read Files\n");
         printf("3. Write File\n");
-        printf("4. Exit\n");
+        printf("4. Delete File\n");
+        printf("5. Exit\n");
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
@@ -145,14 +178,18 @@ int main()
                 break;
 
             case 4:
-                printf("\nExiting System...\n");
+                deleteFile();
                 break;
+
+            case 5:
+               printf("\nExiting System...\n");
+               break;
 
             default:
                 printf("Invalid Choice!\n");
         }
 
-    }while(choice != 4);
+    }while(choice != 5);
 
     return 0;
 }
