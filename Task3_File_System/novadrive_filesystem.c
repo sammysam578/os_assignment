@@ -186,6 +186,35 @@ void encryptFile()
     printf("File Not Found.\n");
 }
 
+// Decrypt file content
+void decryptFile()
+{
+    char fileName[30];
+
+    printf("\nEnter File Name: ");
+    scanf("%s", fileName);
+
+    for(int i = 0; i < totalFiles; i++)
+    {
+        if(strcmp(files[i].name, fileName) == 0)
+        {
+            for(int j = 0; files[i].content[j] != '\0'; j++)
+            {
+                files[i].content[j]--;
+            }
+
+            printf("File Decrypted Successfully.\n");
+
+            // Record decryption in audit log
+            writeLog("Decrypted", fileName);
+
+            return;
+        }
+    }
+
+    printf("File Not Found.\n");
+}
+
 // Saving file in audit log
 void writeLog(char action[], char fileName[])
 {
@@ -220,7 +249,8 @@ int main()
         printf("3. Write File\n");
         printf("4. Delete File\n");
         printf("5. Encrypt File\n");
-        printf("6. Exit\n");
+        printf("6. Decrypt File\n");
+        printf("7. Exit\n");
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
@@ -248,6 +278,10 @@ int main()
                break;
 
             case 6:
+               decryptFile();
+               break;
+
+            case 7:
                printf("\nExiting System...\n");
                break;
 
@@ -255,7 +289,7 @@ int main()
                 printf("Invalid Choice!\n");
         }
 
-    }while(choice != 6);
+    }while(choice != 7);
 
     return 0;
 }
