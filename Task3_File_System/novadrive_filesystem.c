@@ -13,6 +13,7 @@ struct File
 {
     char name[30];
     int size;
+    char content[100];
 };
 
 //  For Storing files
@@ -85,6 +86,30 @@ void readFiles()
     }
 }
 
+// Write data into a file
+void writeFile()
+{
+    char fileName[30];
+
+    printf("\nEnter File Name: ");
+    scanf("%s", fileName);
+
+    for(int i = 0; i < totalFiles; i++)
+    {
+        if(strcmp(files[i].name, fileName) == 0)
+        {
+            printf("Enter File Content: ");
+
+            scanf(" %[^\n]", files[i].content);
+
+            printf("Data Written Successfully.\n");
+            return;
+        }
+    }
+
+    printf("File Not Found.\n");
+}
+
 int main()
 {
     // Stop the program if login fails
@@ -99,7 +124,8 @@ int main()
         printf("\n===== NovaDrive Secure File System =====\n");
         printf("1. Create File\n");
         printf("2. Read Files\n");
-        printf("3. Exit\n");
+        printf("3. Write File\n");
+        printf("4. Exit\n");
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
@@ -115,6 +141,10 @@ int main()
                 break;
 
             case 3:
+                writeFile();
+                break;
+
+            case 4:
                 printf("\nExiting System...\n");
                 break;
 
@@ -122,7 +152,7 @@ int main()
                 printf("Invalid Choice!\n");
         }
 
-    }while(choice != 3);
+    }while(choice != 4);
 
     return 0;
 }
