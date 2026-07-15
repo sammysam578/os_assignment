@@ -16,9 +16,14 @@ int main()
 {
     // Server socket descriptor
     int serverSocket;
+    int clientSocket;
 
     // Server and client address structures
     struct sockaddr_in serverAddress;
+    struct sockaddr_in clientAddress;
+
+    // Stores the size of client address
+    socklen_t clientLength = sizeof(clientAddress);
 
     // Create TCP socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -57,6 +62,23 @@ int main()
     }
 
     printf("NovaDrive Server Waiting For Client...\n");
+
+    // Accept an incoming client connection
+    clientSocket = accept(serverSocket,
+                         (struct sockaddr *)&clientAddress,
+                         &clientLength);
+
+    if(clientSocket < 0)
+    {
+       printf("Client Connection Failed.\n");
+       close(serverSocket);
+       return 1;
+    }
+
+    printf("Client Connected Successfully.\n");
+
+    // Close client socket
+    close(clientSocket);
 
     // Close socket
     close(serverSocket);
