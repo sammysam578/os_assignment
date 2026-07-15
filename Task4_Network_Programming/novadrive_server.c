@@ -18,6 +18,9 @@ int main()
     int serverSocket;
     int clientSocket;
 
+    // Buffer for receiving client messages
+    char buffer[100];
+
     // Server and client address structures
     struct sockaddr_in serverAddress;
     struct sockaddr_in clientAddress;
@@ -76,6 +79,16 @@ int main()
     }
 
     printf("Client Connected Successfully.\n");
+
+    // Receive message from client
+    recv(clientSocket, buffer, sizeof(buffer), 0);
+
+    printf("Client Message : %s\n", buffer);
+
+    // Reply to client
+    char reply[] = "Hello Client";
+
+    send(clientSocket, reply, strlen(reply) + 1, 0);
 
     // Close client socket
     close(clientSocket);
