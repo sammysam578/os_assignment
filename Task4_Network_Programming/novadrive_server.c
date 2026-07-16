@@ -9,17 +9,47 @@
 #include <unistd.h>
 
 #include <arpa/inet.h>
-
+#include <pthread.h>
 #define PORT 8080
+
+// Handles each client connection separately
+void *clientHandler(void *socketPointer)
+{
+    int clientSocket = *(int *)socketPointer;
+    char buffer[100];
+
+    // Receive message from client
+    int received = recv(clientSocket,
+                        buffer,
+                        sizeof(buffer),
+                        0);
+
+    if(received <= 0)
+    {
+        printf("Client disconnected.\n");
+        close(clientSocket);
+        pthread_exit(NULL);
+    }
+    printf("Client Message : %s\n", buffer);
+
+    // Send response to client
+    char reply[] = "Hello Client";
+
+    send(clientSocket,
+         reply,
+         strlen(reply) + 1,
+         0);
+
+    // Close client connection
+    close(clientSocket);
+    pthread_exit(NULL);
+}
 
 int main()
 {
     // Server socket descriptor
     int serverSocket;
     int clientSocket;
-
-    // Buffer for receiving client messages
-    char buffer[100];
 
     // Server and client address structures
     struct sockaddr_in serverAddress;
@@ -66,35 +96,28 @@ int main()
 
     printf("NovaDrive Server Waiting For Client...\n");
 
-    // Accept an incoming client connection
-    clientSocket = accept(serverSocket,
-                         (struct sockaddr *)&clientAddress,
-                         &clientLength);
-
-    if(clientSocket < 0)
+    while(1)
     {
-       printf("Client Connection Failed.\n");
-       close(serverSocket);
-       return 1;
-    }
+        printf("Waiting For Client...\n");
+        clientSocket = accept(serverSocket,
+                             (struct sockaddr *)&clientAddress,
+                             &clientLength);
+        
+        if(clientSocket < 0)
+        {
+            printf("Client Connection Failed.\n");
+            continue;
+        }
 
-    printf("Client Connected Successfully.\n");
+        printf("Client Connected Successfully.\n");
 
-    // Receive message from client
-    recv(clientSocket, buffer, sizeof(buffer), 0);
-
-    printf("Client Message : %s\n", buffer);
-
-    // Reply to client
-    char reply[] = "Hello Client";
-
-    send(clientSocket, reply, strlen(reply) + 1, 0);
-
-    // Close client socket
-    close(clientSocket);
-
-    // Close socket
-    close(serverSocket);
+         pthread_t thread;
+         pthread_create(&thread,
+                        NULL,
+                        clientHandler,
+                        &clientSocket);
+         pthread_detach(thread);
+    }    
 
     return 0;
 }
