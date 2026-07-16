@@ -21,58 +21,65 @@ void *clientHandler(void *socketPointer)
     char password[50];
 
     char loginData[100];
-    recv(clientSocket,
-         loginData,
-         sizeof(loginData),
-         0);
+    int loginReceived = recv(clientSocket,
+                         loginData,
+                         sizeof(loginData),
+                         0);
+    if(loginReceived <= 0)
+    {
+        printf("Login data not received.\n");
+        close(clientSocket);
+        pthread_exit(NULL);
+    }
 
      // Separate username and password
      sscanf(loginData,
            "%[^:]:%s",
            username,
            password);
+    printf("Username received: %s\n", username);
+    printf("Password received: %s\n", password);
+ 
+   if(strcmp(username,"admin") == 0 &&
+      strcmp(password,"novadrive") == 0)
+   {
+      char success[]="Authentication Successful";
+      send(clientSocket,
+         success,
+         strlen(success)+1,
+         0);
 
-    // Check authentication
-    if(strcmp(username, "admin") != 0 ||
-       strcmp(password, "novadrive") != 0)
-    {
-        char fail[] = "Authentication Failed";
+    printf("Authentication Successful.\n");
+   }
+   else
+   {
+       char fail[]="Authentication Failed";
+       send(clientSocket,
+           fail,
+           strlen(fail)+1,
+           0);
 
+    printf("Authentication Failed.\n");
 
-        send(clientSocket,
-             fail,
-             strlen(fail)+1,
-             0);
+    close(clientSocket);
 
-
-        printf("Authentication Failed.\n");
-
-
-        close(clientSocket);
-
-        pthread_exit(NULL);
-    }
-
-
-
+    pthread_exit(NULL);
+}
+    
     // Authentication successful
     char success[] = "Authentication Successful";
-
-
     send(clientSocket,
          success,
          strlen(success)+1,
          0);
 
-
     printf("Client Authentication Successful.\n");
-
-
+    printf("Waiting for client message...\n");
 
     // Receive client message
     int received = recv(clientSocket,
                         buffer,
-                        sizeof(buffer),
+                        sizeof(buffer)-1,
                         0);
 
     if(received <= 0)
@@ -81,16 +88,25 @@ void *clientHandler(void *socketPointer)
         close(clientSocket);
         pthread_exit(NULL);
     }
+    // Add string termination
+    buffer[received] = '\0';
+    
     printf("Client Message : %s\n", buffer);
-
+    if(strlen(buffer) == 0)
+    {
+        printf("Empty message received.\n");
+        close(clientSocket);
+        pthread_exit(NULL);
+    }
     // Send response to client
     char reply[] = "Hello Client";
-
-    send(clientSocket,
-         reply,
-         strlen(reply) + 1,
-         0);
-
+    if(send(clientSocket,
+        reply,
+        strlen(reply)+1,
+        0) < 0)
+    {
+    printf("Failed to send response.\n");
+    }
     // Close client connection
     close(clientSocket);
     pthread_exit(NULL);

@@ -17,8 +17,8 @@ int main()
     int clientSocket;
 
     struct sockaddr_in serverAddress;
-    char username[] = "admin";
-    char password[] = "novadrive";
+    char username[50];
+    char password[50];
 
     char authResponse[100];
     char message[100] = "Hello Server";
@@ -51,6 +51,11 @@ int main()
     }
 
     printf("Connected To Server.\n");
+   // Get login details from user
+   printf("Username: ");
+   scanf("%s", username);
+   printf("Password: ");
+   scanf("%s", password);
     // Combine username and password
     char loginData[100];
 
@@ -59,24 +64,53 @@ int main()
            username,
            password);
     // Send login information
-    send(clientSocket,
-         loginData,
-         strlen(loginData)+1,
-         0);
+    if(send(clientSocket,
+            loginData,
+            strlen(loginData)+1,
+            0) < 0)
+     {
+     printf("Failed to send login data.\n");
+     close(clientSocket);
+     return 1;
+     }
 
     // Receive authentication result
-    recv(clientSocket,
-         authResponse,
-         sizeof(authResponse),
-         0);
+    int authReceived = recv(clientSocket,
+                        authResponse,
+                        sizeof(authResponse)-1,
+                        0);
+    if(authReceived <= 0)
+    {
+        printf("Authentication response failed.\n");
+        close(clientSocket);
+        return 1;
+    }
+
+    authResponse[authReceived]='\0';
     printf("%s\n", authResponse);
-    
-    // Send message
-    send(clientSocket, message, strlen(message)+1, 0);
-
+     // Send message after authentication    
+    if(send(clientSocket,
+           message,
+           strlen(message)+1,
+           0) < 0)
+    {
+    printf("Failed to send message.\n");
+    close(clientSocket);
+    return 1;
+    }
+ 
     // Receive reply
-    recv(clientSocket, buffer, sizeof(buffer), 0);
-
+    int replyReceived = recv(clientSocket,
+                         buffer,
+                         sizeof(buffer)-1,
+                         0);
+    if(replyReceived <= 0)
+    {
+        printf("Server disconnected.\n");
+        close(clientSocket);
+        return 1;
+    }
+    buffer[replyReceived]='\0';
     printf("Server Reply : %s\n", buffer);
 
     close(clientSocket);
