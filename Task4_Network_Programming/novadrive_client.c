@@ -17,7 +17,10 @@ int main()
     int clientSocket;
 
     struct sockaddr_in serverAddress;
+    char username[] = "admin";
+    char password[] = "novadrive";
 
+    char authResponse[100];
     char message[100] = "Hello Server";
 
     char buffer[100];
@@ -48,7 +51,26 @@ int main()
     }
 
     printf("Connected To Server.\n");
+    // Combine username and password
+    char loginData[100];
 
+    sprintf(loginData,
+           "%s:%s",
+           username,
+           password);
+    // Send login information
+    send(clientSocket,
+         loginData,
+         strlen(loginData)+1,
+         0);
+
+    // Receive authentication result
+    recv(clientSocket,
+         authResponse,
+         sizeof(authResponse),
+         0);
+    printf("%s\n", authResponse);
+    
     // Send message
     send(clientSocket, message, strlen(message)+1, 0);
 

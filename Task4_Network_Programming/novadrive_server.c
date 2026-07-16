@@ -17,8 +17,59 @@ void *clientHandler(void *socketPointer)
 {
     int clientSocket = *(int *)socketPointer;
     char buffer[100];
+    char username[50];
+    char password[50];
 
-    // Receive message from client
+    char loginData[100];
+    recv(clientSocket,
+         loginData,
+         sizeof(loginData),
+         0);
+
+     // Separate username and password
+     sscanf(loginData,
+           "%[^:]:%s",
+           username,
+           password);
+
+    // Check authentication
+    if(strcmp(username, "admin") != 0 ||
+       strcmp(password, "novadrive") != 0)
+    {
+        char fail[] = "Authentication Failed";
+
+
+        send(clientSocket,
+             fail,
+             strlen(fail)+1,
+             0);
+
+
+        printf("Authentication Failed.\n");
+
+
+        close(clientSocket);
+
+        pthread_exit(NULL);
+    }
+
+
+
+    // Authentication successful
+    char success[] = "Authentication Successful";
+
+
+    send(clientSocket,
+         success,
+         strlen(success)+1,
+         0);
+
+
+    printf("Client Authentication Successful.\n");
+
+
+
+    // Receive client message
     int received = recv(clientSocket,
                         buffer,
                         sizeof(buffer),
