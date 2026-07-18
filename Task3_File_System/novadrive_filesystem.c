@@ -75,10 +75,10 @@ void createFile()
     printf("Enter File Size (KB): ");
     scanf("%d", &files[totalFiles].size);
 
-   // Default file permissions
-   strcpy(files[totalFiles].permission.owner, "rwx");
-   strcpy(files[totalFiles].permission.group, "r--");
-   strcpy(files[totalFiles].permission.others, "---");
+    // Default file permissions
+    strcpy(files[totalFiles].permission.owner, "rwx");
+    strcpy(files[totalFiles].permission.group, "r--");
+    strcpy(files[totalFiles].permission.others, "---");
    
     // Record file creation in the audit log
     writeLog("Created", files[totalFiles].name);
@@ -100,7 +100,14 @@ void readFiles()
     }
 
     for(int i=0;i<totalFiles;i++)
-    {
+    { 
+       // Check read permission
+       if(strchr(files[i].permission.owner, 'r') == NULL)
+       {
+            printf("\n%s : Read Permission Denied.\n",
+                   files[i].name);
+            continue;
+       }
         printf("\nFile %d\n", i + 1);
         printf("Name       : %s\n", files[i].name);
         printf("Size       : %d KB\n", files[i].size);
@@ -122,8 +129,14 @@ void writeFile()
 
     for(int i = 0; i < totalFiles; i++)
     {
-        if(strcmp(files[i].name, fileName) == 0)
-        {
+       if(strcmp(files[i].name, fileName) == 0)
+       {
+           // Check write permission
+           if(strchr(files[i].permission.owner, 'w') == NULL)
+           {
+               printf("Write Permission Denied.\n");
+               return;
+            }
             printf("Enter File Content: ");
 
             scanf(" %99s", files[i].content);
@@ -235,6 +248,12 @@ void encryptFile()
     {
         if(strcmp(files[i].name, fileName) == 0)
         {
+           // Check write permission
+           if(strchr(files[i].permission.owner, 'w') == NULL)
+           {
+            printf("Write Permission Denied.\n");
+            return;
+            }
             for(int j = 0; files[i].content[j] != '\0'; j++)
             {
                 files[i].content[j]++;
@@ -264,6 +283,12 @@ void decryptFile()
     {
         if(strcmp(files[i].name, fileName) == 0)
         {
+           // Check write permission
+           if(strchr(files[i].permission.owner, 'w') == NULL)
+           {
+           printf("Write Permission Denied.\n");
+           return;
+            }
             for(int j = 0; files[i].content[j] != '\0'; j++)
             {
                 files[i].content[j]--;
