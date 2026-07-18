@@ -5,19 +5,26 @@
 // Maximum number of files
 #define MAX_FILES 10
 
-// Default login credentials
+// Defult login credentials
 char username[] = "admin";
 char password[] = "novadrive";
 
-// structure of file 
+// Stores owner, group and others permissions
+struct Permission
+{
+    char owner[4];
+    char group[4];
+    char others[4];
+};
+
+// Structure representing a file
 struct File
 {
     char name[30];
     int size;
     char content[100];
 
-    // File permissions
-    char permission[4];
+    struct Permission permission;
 };
 
 //  For Storing files
@@ -68,8 +75,11 @@ void createFile()
     printf("Enter File Size (KB): ");
     scanf("%d", &files[totalFiles].size);
 
-    strcpy(files[totalFiles].permission, "rw");
-
+   // Default file permissions
+   strcpy(files[totalFiles].permission.owner, "rwx");
+   strcpy(files[totalFiles].permission.group, "r--");
+   strcpy(files[totalFiles].permission.others, "---");
+   
     // Record file creation in the audit log
     writeLog("Created", files[totalFiles].name);
 
@@ -94,7 +104,9 @@ void readFiles()
         printf("\nFile %d\n", i + 1);
         printf("Name       : %s\n", files[i].name);
         printf("Size       : %d KB\n", files[i].size);
-        printf("Permission : %s\n", files[i].permission);
+        printf("Owner Permission  : %s\n", files[i].permission.owner);
+        printf("Group Permission  : %s\n", files[i].permission.group);
+        printf("Others Permission : %s\n", files[i].permission.others);
         printf("Content    : %s\n", files[i].content);
   
     }
@@ -150,6 +162,60 @@ void deleteFile()
             
             // Record file deletion
             writeLog("Deleted", fileName);
+            return;
+        }
+    }
+
+    printf("File Not Found.\n");
+}
+
+// Display permissions of a file
+void showPermission()
+{
+    char fileName[30];
+
+    printf("\nEnter File Name: ");
+    scanf("%s", fileName);
+
+    for(int i = 0; i < totalFiles; i++)
+    {
+        if(strcmp(files[i].name, fileName) == 0)
+        {
+            printf("\nOwner  : %s\n", files[i].permission.owner);
+            printf("Group  : %s\n", files[i].permission.group);
+            printf("Others : %s\n", files[i].permission.others);
+
+            return;
+        }
+    }
+
+    printf("File Not Found.\n");
+}
+
+// Change permissions of a file
+void changePermission()
+{
+    char fileName[30];
+
+    printf("\nEnter File Name: ");
+    scanf("%s", fileName);
+
+    for(int i = 0; i < totalFiles; i++)
+    {
+        if(strcmp(files[i].name, fileName) == 0)
+        {
+            printf("Owner Permission (e.g. rwx): ");
+            scanf("%3s", files[i].permission.owner);
+
+            printf("Group Permission (e.g. r--): ");
+            scanf("%3s", files[i].permission.group);
+
+            printf("Others Permission (e.g. ---): ");
+            scanf("%3s", files[i].permission.others);
+
+            writeLog("Permission Changed", fileName);
+
+            printf("Permissions Updated Successfully.\n");
             return;
         }
     }
@@ -248,9 +314,11 @@ int main()
         printf("2. Read Files\n");
         printf("3. Write File\n");
         printf("4. Delete File\n");
-        printf("5. Encrypt File\n");
-        printf("6. Decrypt File\n");
-        printf("7. Exit\n");
+        printf("5. Show Permissions\n");
+        printf("6. Change Permissions\n");
+        printf("7. Encrypt File\n");
+        printf("8. Decrypt File\n");
+        printf("9. Exit\n");
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
@@ -272,24 +340,31 @@ int main()
             case 4:
                 deleteFile();
                 break;
-
             case 5:
-               encryptFile();
-               break;
+                showPermission();
+                break;
 
             case 6:
-               decryptFile();
-               break;
+                changePermission();
+                break;
 
             case 7:
-               printf("\nExiting System...\n");
-               break;
+                encryptFile();
+                break;
+
+            case 8:
+                decryptFile();
+                break;
+
+            case 9:
+                printf("\nExiting System...\n");
+                break;
 
             default:
                 printf("Invalid Choice!\n");
-        }
+         }
 
-    }while(choice != 7);
+    }while(choice != 9);
 
     return 0;
 }
